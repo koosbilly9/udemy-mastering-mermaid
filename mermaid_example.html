@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h3> Flowchart Sample</h3>
+
+<pre class="mermaid">
+    flowchart TD
+        A[Christmas] -->| Get Money| B(Go Shopping)
+        B --> C{Let me think}
+        C -->|One| D[Laptop]
+        C -->|Two| D[Iphone]
+        C -->|Three| F[fa:fa-car Car]
+</pre>
+
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true})
+
+</script>
+
+</body>
+</html>
