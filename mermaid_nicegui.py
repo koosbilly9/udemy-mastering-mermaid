@@ -1,4 +1,4 @@
-from nicegui import ui, app
+from nicegui import ui
 from nicegui.events import GenericEventArguments
 
 MERMAID_OIDC = """
@@ -16,7 +16,7 @@ C4Context
     Rel(client_app, idp, "2. Authenticates users via OIDC")
 """
 
-MERMAID_FLOWCHART="""
+MERMAID_FLOWCHART = """
 --- 
 Fowchart or graph
  - TD, LR ,DT ,RL eg flochart TD
@@ -60,7 +60,7 @@ flowchart
     
 """
 
-MERMAID_SUB_GRAPH="""
+MERMAID_SUB_GRAPH = """
 ---
 Subgraph (flowchart)
 
@@ -94,6 +94,35 @@ graph LR
     two-->three
 """
 
+MERMAID_FLOWCHART_LINE_STYLE = """
+%%{
+    init:{
+        'workflow':{
+            'curve': 'step'
+        }
+    }
+}%%
+flowchart TB
+    A([Start])-->B[/Input x/]
+    B --> C{"x>5?"}
+    C -..->|yes|D([stop])
+    C -->|No|F[/print x/]
+    F-->G[x =x + 1]
+    G:::colorC -->C
+    
+    linkStyle 1,3 stroke-width:6px, stroke:#00ff00
+    linkStyle 4 stroke-width:6px, stroke:#ff0000
+    
+    style B color:#ffffff, font-size:18pt, fill:#00aaff
+    
+    classDef default font-size:15pt, stroke-widht:3-x
+    
+    classDef colorC color:#ff00fF
+    
+    class A,D colorC 
+"""
+
+
 def handle_mermaid_click(e: GenericEventArguments):
     """
     This Python function is called from JavaScript via the emitEvent.
@@ -102,32 +131,23 @@ def handle_mermaid_click(e: GenericEventArguments):
     node_id = e.args
     ui.notify(f"You clicked node: {node_id}")
 
+
 # --- Register the event handler ---
 # The event name 'node_clicked' must match the one used in emitEvent()
 ui.on('node_clicked', handle_mermaid_click)
 
-# # Use on_startup to register the JavaScript after the server starts.
-# @app.on_connect
-# def setup_javascript():
-#     ui.run_javascript("""
-#     function call_python_callback() {
-#         emitEvent('A1_clicked');
-#     }
-#     """)
-
-
-
 with ui.row():
-    toggle_mermaid_diagram = ui.toggle({MERMAID_OIDC:'C4 Oidc', MERMAID_FLOWCHART:'Flowchart', MERMAID_SUB_GRAPH:'Sub graph'}, value=MERMAID_SUB_GRAPH)
+    toggle_mermaid_diagram = ui.toggle({MERMAID_FLOWCHART_LINE_STYLE: "Line style",
+                                        MERMAID_OIDC: 'C4 Oidc', MERMAID_FLOWCHART: 'Flowchart',
+                                        MERMAID_SUB_GRAPH: 'Sub graph'},
+                                       value=MERMAID_FLOWCHART_LINE_STYLE)
 
     text_mermaid = ui.codemirror(language='Python'
-                             ).classes('h-80'
-                           ).bind_value_from(toggle_mermaid_diagram, "value")
-
-
+                                 ).classes('h-80'
+                                           ).bind_value_from(toggle_mermaid_diagram, "value")
 
     ui.mermaid('', config={'securityLevel': 'loose'}
-           ).bind_content_from(text_mermaid, "value"
-                               ).classes("size-200")
+               ).bind_content_from(text_mermaid, "value"
+                                   ).classes("size-200")
 
 ui.run()
