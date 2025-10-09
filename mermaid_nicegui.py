@@ -15,8 +15,21 @@ C4Context
     Rel(client_app, idp, "2. Authenticates users via OIDC")
 """
 
-text_mermaid = ui.textarea(value=MERMAID_OIDC, placeholder="graph LR;"
-                           ).classes("size-full")
+MERMAID_FLOWCHART="""
+flowchart TB
+    A-->B
+    B-->C
+    C-->D
+    C-->D
+"""
+
+toggle_mermaid_diagram = ui.toggle({MERMAID_OIDC:'C4 Oidc', MERMAID_FLOWCHART:'Flowchart '}, value=MERMAID_OIDC)
+
+text_mermaid = ui.codemirror(language='Python'
+                             ).classes('h-80'
+                           ).bind_value_from(toggle_mermaid_diagram, "value")
+
+
 
 ui.mermaid(''
            ).bind_content_from(text_mermaid, "value"
