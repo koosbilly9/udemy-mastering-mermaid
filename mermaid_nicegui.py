@@ -1,4 +1,5 @@
-from nicegui import ui
+from nicegui import ui, app
+from nicegui.events import GenericEventArguments
 
 MERMAID_OIDC = """
 C4Context
@@ -69,6 +70,8 @@ must have "end"
 graph LR
     subgraph one[Single]
     A1
+    click A1 call emitEvent("node_clicked", "stop clicking me!!") "Tooltip"
+    
     
     end
     
@@ -76,6 +79,7 @@ graph LR
         subgraph two[Double inverse]
         direction RL
         B1[(oracle)]-->B2
+        click B1 "https://www.github.com" "tooltip" _blank
         
         end
         
@@ -90,15 +94,39 @@ graph LR
     two-->three
 """
 
-toggle_mermaid_diagram = ui.toggle({MERMAID_OIDC:'C4 Oidc', MERMAID_FLOWCHART:'Flowchart', MERMAID_SUB_GRAPH:'Sub graph'}, value=MERMAID_SUB_GRAPH)
+def handle_mermaid_click(e: GenericEventArguments):
+    """
+    This Python function is called from JavaScript via the emitEvent.
+    The event object `e` contains the arguments passed from JavaScript.
+    """
+    node_id = e.args
+    ui.notify(f"You clicked node: {node_id}")
 
-text_mermaid = ui.codemirror(language='Python'
+# --- Register the event handler ---
+# The event name 'node_clicked' must match the one used in emitEvent()
+ui.on('node_clicked', handle_mermaid_click)
+
+# # Use on_startup to register the JavaScript after the server starts.
+# @app.on_connect
+# def setup_javascript():
+#     ui.run_javascript("""
+#     function call_python_callback() {
+#         emitEvent('A1_clicked');
+#     }
+#     """)
+
+
+
+with ui.row():
+    toggle_mermaid_diagram = ui.toggle({MERMAID_OIDC:'C4 Oidc', MERMAID_FLOWCHART:'Flowchart', MERMAID_SUB_GRAPH:'Sub graph'}, value=MERMAID_SUB_GRAPH)
+
+    text_mermaid = ui.codemirror(language='Python'
                              ).classes('h-80'
                            ).bind_value_from(toggle_mermaid_diagram, "value")
 
 
 
-ui.mermaid(''
+    ui.mermaid('', config={'securityLevel': 'loose'}
            ).bind_content_from(text_mermaid, "value"
                                ).classes("size-200")
 
