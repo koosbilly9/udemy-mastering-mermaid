@@ -122,6 +122,148 @@ flowchart TB
     class A,D colorC 
 """
 
+MERMAID_SEQUENCE_DIAGRAM = """
+---
+Sequence Diagram
+Benefits
+1) Understanding system behavior
+2) Communication espcially between technical and non technical stakeholders
+3) Design and Doc
+4) Id issues and possible improvements
+5) Testing and Validation - used to dev test / use cases
+6) During sys main shows stakeholders
+7) Prototyping and planning
+8) Training and on boarding
+
+-- Default
+participant is default
+syncronys by default
+% comment
+Lines
+- , -- , > , >> solid arrowsyncronys
+) Async communication
+x end communication
+
+---
+sequenceDiagram
+    Actor Manager
+    participant Alice as sup1
+    note right of James: Text Bob move it
+    note over Alice, James: howzit <br/> Bro
+    
+    Manager-->>Alice: Call a meeting
+    Alice ->> James: Hi James, its Alice
+    James -) Alice: Hello Alice
+    Alice ->> Bob: Are you there Bob
+    Bob -x Alice: On my way    
+    create actor caller1
+    Alice -) caller1: Hi 
+    caller1 ->> Alice: Hi Dear, lunch orders
+    Bob -x Alice: Have to drop out
+    destroy Bob
+    Alice --x Bob: Bye
+    Manager -->> Alice : Everyone ready?
+    Alice -->> Manager: Finishing food orders now
+    Manager --) Alice: Fish
+    Alice ->> James: Food ?
+    James -) Alice: Beef
+    Alice ->> caller1: 1 fish 1 beef
+    caller1 ->> Alice: done
+    destroy caller1
+    Alice -x caller1: thanks
+    
+    
+    
+"""
+
+MERMAID_SEQUENCE_DIAGRAM_2 = """
+sequenceDiagram
+    loop Till successfull every 3 mins
+        critical Establish connection to DB
+            Server->>Database: Give me data
+            activate Database
+            Database-->>Server: here we go
+            deactivate Database
+            
+        option Network Timeout
+            Server --> Server: Log network error
+        
+        option Server Timeout
+            Server --> Server: Server error
+         
+        break on crit error    
+            Server --> Server: Log invalid credentials
+        end
+            
+        end
+    end
+"""
+
+MERMAID_SEQUENCE_DIAGRAM_3 = """
+sequenceDiagram
+    autonumber
+    box rgb(255,5,5,0.7) Front end 😁
+    participant User
+    participant App as "Shopping App"
+    end
+    
+    box cyan the Backend 👖
+    participant Gateway as "Payment Gateway"
+    participant Bank
+    end
+    
+    User->>App: Select item and checkout
+    activate App
+    App ->> Gateway: initiate payment request
+    activate Gateway
+    
+    
+    
+    % Alternative use +/- to activate deactivate
+    Gateway->>+Bank: Process payment
+    
+    create actor Teller
+    par Bank to Teller
+        Bank--)+Teller: check balance
+            
+            rect rgb(0,255,0,0.7)
+                alt is balance enough?    
+                    Teller --)Bank: Balance ok 👍
+                else balance to low
+                    Teller --)Bank: Balance Nok 👎
+                end
+                
+                opt
+                   Teller --)Bank: No such account 😳
+                   Teller --)Bank: Account froze 🥶
+                   Teller --)Bank: Suspicious transaction 🚨     
+                end
+            end
+    and Bank to Gateway
+        rect yellow
+            Bank --) Gateway: Play tune 🎶
+        end
+        
+    end
+    
+    Teller--)-Bank: bye
+        
+    destroy Teller
+    Bank--xTeller: Thanks
+    
+    
+    
+    Bank->>-Gateway: Payment approved
+    
+    
+    Gateway->>App: Payment successful
+    deactivate Gateway
+    App--xUser: Order confirmation
+    deactivate App
+    
+    
+"""
+
 
 def handle_mermaid_click(e: GenericEventArguments):
     """
@@ -137,10 +279,14 @@ def handle_mermaid_click(e: GenericEventArguments):
 ui.on('node_clicked', handle_mermaid_click)
 
 with ui.row():
-    toggle_mermaid_diagram = ui.toggle({MERMAID_FLOWCHART_LINE_STYLE: "Line style",
-                                        MERMAID_OIDC: 'C4 Oidc', MERMAID_FLOWCHART: 'Flowchart',
-                                        MERMAID_SUB_GRAPH: 'Sub graph'},
-                                       value=MERMAID_FLOWCHART_LINE_STYLE)
+    toggle_mermaid_diagram = ui.toggle({
+        MERMAID_SEQUENCE_DIAGRAM_3: "Seq OnlineShop",
+        MERMAID_SEQUENCE_DIAGRAM_2: "Seq DB",
+        MERMAID_SEQUENCE_DIAGRAM: "Seq Diagram",
+        MERMAID_FLOWCHART_LINE_STYLE: "Line style",
+        MERMAID_OIDC: 'C4 Oidc', MERMAID_FLOWCHART: 'Flowchart',
+        MERMAID_SUB_GRAPH: 'Sub graph'},
+        value=MERMAID_SEQUENCE_DIAGRAM_3)
 
     text_mermaid = ui.codemirror(language='Python'
                                  ).classes('h-80'
