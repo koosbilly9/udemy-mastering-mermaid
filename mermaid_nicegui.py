@@ -354,24 +354,106 @@ click Dog call emitEvent("callback_dog", "Good Boy")
 
 """
 
-MERMAID_STATE_DIAGRAM="""
 # ---
-# State Diagram / machine state diagram
-# Models a state a system can be in and what event tiggers\ transistion between states.
-# Components 
+# State Diagram machine state diagram
+# Models a state a system can be in and what event tiggers transistion between states.
+# Components
 # States: boxes/circles = distinct condition th system can be in
 #     Initial State = circle
 #     Final State = circle with dot inside
 # Activities: operations a system perform while in a particular state
-# 
+#
 # Events: occurrences that trigger transistion
-# 
+#
 # Transistions: arrows show move from one state to next TRIGGERED by events
 # Actions: operations performed when transistion occur
-# 
+#
 # ---
+MERMAID_STATE_DIAGRAM="""
+---
+title: Car Design states
+---
 stateDiagram-v2
-    [*]
+    Design: Label Design
+    Produce: Plant 99
+    direction LR
+    [*]-->Design
+    Design --> Produce
+    Produce --> Deliver : Do not F Up
+    Deliver --> [*]
+    
+    note right of Design
+        blajvk
+        blah blah
+    end note
+    
+    note left of Deliver: 7 Days
+"""
+
+MERMAID_STATE_DIAGRAM_COMPOSITE = """
+stateDiagram-v2
+    [*] --> state1
+    state state1 {
+        [*] --> state2
+        state state2 {
+            [*] --> state3
+            state3 --> [*]
+        }
+        state2 --> [*]
+    }
+    state1 --> [*]
+    
+    state state3{
+     state22
+     state23
+     state24
+     
+     state22 --> [*]
+     state23 --> [*]
+     state24 --> [*]
+    }
+    
+    direction LR
+"""
+
+MERMAID_STATE_DIAGRAM_CHOICE = """
+stateDiagram-v2
+    state special_primer <<choice>>
+    state primer_entrance <<fork>>
+    state join_color_booth <<join>>
+    
+    %% define css class
+    classDef body_in_white fill:white
+    classDef primed font-style:italic
+    classDef no_primer fill:#F00, color:white
+    
+    %% Apply css list nodes space class
+    class rk, Yes, No body_in_white
+    class hangonparts, Yes rk_primer primed
+    class  magic_juice, Yes no_primer
+    
+    
+    [*]--> rk
+    rk --> primer_entrance
+    primer_entrance --> hangonparts
+    primer_entrance --> rk_primer
+    
+    hangonparts --> join_color_booth
+    rk_primer --> join_color_booth
+    
+    join_color_booth --> spray_booth
+    
+    
+    
+    state rk_primer {
+        special_primer --> Yes: sowu = 204
+        special_primer --> No : sowu != 204
+        Yes --> magic_juice
+        magic_juice -->[*]
+        No --> [*]
+    }
+    
+    direction LR
 """
 
 
@@ -408,8 +490,10 @@ with ui.row():
         MERMAID_FLOWCHART_LINE_STYLE: "Line style",
         MERMAID_OIDC: 'C4 Oidc', MERMAID_FLOWCHART: 'Flowchart',
         MERMAID_SUB_GRAPH: 'Sub graph',
-        MERMAID_STATE_DIAGRAM: 'State diagram',},
-        value=MERMAID_STATE_DIAGRAM)
+        MERMAID_STATE_DIAGRAM: 'State diagram',
+        MERMAID_STATE_DIAGRAM_COMPOSITE: 'State diagram composite',
+        MERMAID_STATE_DIAGRAM_CHOICE: 'State diagram choice',},
+        value=MERMAID_STATE_DIAGRAM_CHOICE)
 
     text_mermaid = ui.codemirror(language='Python'
                                  ).classes('h-80'
