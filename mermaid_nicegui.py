@@ -264,6 +264,118 @@ sequenceDiagram
     
 """
 
+MERMAID_CLASS_DIAGRAM="""
+---
++ String Owner ( + = Public/ -:Private / #:Protected /~:only access by self and packages that inherit it
+---
+classDiagram
+    class BankAccount {
+        -String owner
+        -BigDecimal balance
+        +withdrawal() bool
+        +deposit() int
+        
+        method_abstact_1()*
+        method_static_1() String$
+    
+    }
+    class Person
+        Person: -String name
+        Person: -Int age
+        Person: #List~string~ siblings
+        Person: +walk( Int distance)
+        Person: +talk() List~string~
+     
+        
+        BankAccount--Person
+"""
+
+MERMAID_CLASS_DIAGRAM_2="""
+---
+title: Animal Relationship
+---
+classDiagram
+    %% directions LR/TB(default)/RL/BT
+    %% Cardinality /Multiplicity 1:1, 1:many, many:1 done before link ex "0" o-- "1"
+    direction TB
+    
+    Animal <|-- Mammal : Inheritance
+    Animal <|-- Reptile : Inheritance
+    
+    Mammal "0" o-- "*" Dog : Aggregation
+    Mammal "1" *-- "*" Dolphin : Composition
+    
+    Reptile "1" *-- "0-N" Platypus : Composition
+    
+    class Animal{
+        - age: int
+        + makeSound(): void
+    }
+    
+    class Mammal {
+        <<Abstract>>
+        # furColor: String
+        - giveBirth(): void
+    }
+    
+    class Reptile {
+        << Interface>>
+        # scaleType: string
+        + layEggs(): void
+    }
+    
+    class Dog {
+        << Good Boy>>
+        # breed: string
+        + bark(): void
+    }
+
+
+    class Dolphin
+        <<wtf>> Dolphin
+        Dolphin: + swim() void
+
+
+namespace WeirdFamily {   
+    class Platypus {
+        # poisonous: boolean
+        + swim() void
+        
+    }
+       
+}
+
+link Platypus "birds.html" "goto birds detail"
+
+click Animal call emitEvent("callback_animal", "Animal")
+click Dog call emitEvent("callback_dog", "Good Boy")
+
+
+
+"""
+
+MERMAID_STATE_DIAGRAM="""
+# ---
+# State Diagram / machine state diagram
+# Models a state a system can be in and what event tiggers\ transistion between states.
+# Components 
+# States: boxes/circles = distinct condition th system can be in
+#     Initial State = circle
+#     Final State = circle with dot inside
+# Activities: operations a system perform while in a particular state
+# 
+# Events: occurrences that trigger transistion
+# 
+# Transistions: arrows show move from one state to next TRIGGERED by events
+# Actions: operations performed when transistion occur
+# 
+# ---
+stateDiagram-v2
+    [*]
+"""
+
+
+
 
 def handle_mermaid_click(e: GenericEventArguments):
     """
@@ -273,20 +385,31 @@ def handle_mermaid_click(e: GenericEventArguments):
     node_id = e.args
     ui.notify(f"You clicked node: {node_id}")
 
+def handle_animal_click(e: GenericEventArguments):
+    ui.notify(f"animal clicked")
+
+def handle_dog_click(e: GenericEventArguments):
+    ui.notify(f"dog clicked {e.args}")
+
 
 # --- Register the event handler ---
 # The event name 'node_clicked' must match the one used in emitEvent()
 ui.on('node_clicked', handle_mermaid_click)
+ui.on('callback_animal', handle_animal_click)
+ui.on('callback_dog', handle_dog_click)
 
 with ui.row():
     toggle_mermaid_diagram = ui.toggle({
+        MERMAID_CLASS_DIAGRAM:"Class diagram",
+        MERMAID_CLASS_DIAGRAM_2: "Class diagram with callback" ,
         MERMAID_SEQUENCE_DIAGRAM_3: "Seq OnlineShop",
         MERMAID_SEQUENCE_DIAGRAM_2: "Seq DB",
         MERMAID_SEQUENCE_DIAGRAM: "Seq Diagram",
         MERMAID_FLOWCHART_LINE_STYLE: "Line style",
         MERMAID_OIDC: 'C4 Oidc', MERMAID_FLOWCHART: 'Flowchart',
-        MERMAID_SUB_GRAPH: 'Sub graph'},
-        value=MERMAID_SEQUENCE_DIAGRAM_3)
+        MERMAID_SUB_GRAPH: 'Sub graph',
+        MERMAID_STATE_DIAGRAM: 'State diagram',},
+        value=MERMAID_STATE_DIAGRAM)
 
     text_mermaid = ui.codemirror(language='Python'
                                  ).classes('h-80'
