@@ -456,6 +456,81 @@ stateDiagram-v2
     direction LR
 """
 
+MERMAID_ENTITY_RELATIONSHIP_DIAGRAM="""
+%% ERD  - relationship in DB
+erDiagram
+    Person [Customer]{
+        int PID PK "Person ID"
+        string Name
+        int Age
+        string Address
+    }
+    
+    Person ||--|{ Address: contains
+    
+    Address ["Home Address"] {
+        string City
+        string State
+        int Zip
+        int owner PK,FK
+    }
+    
+"""
+
+MERMAID_ENTITY_RELATIONSHIP_DIAGRAM_2="""
+---
+title: Order example
+config:
+    layout: elk
+    elk:
+        mergeEdges: true
+        nodePlacementStrategy: LINEAR_SEGMENTS
+    theme: base
+    themeVariables:
+        primaryColor: #00ff00
+        tertiaryColor: red
+---
+
+erDiagram
+
+    
+    CUSTOMER{
+        string name
+        int id
+        string email
+    }
+    
+    CUSTOMER ||--o{ ORDER : places
+    
+    ORDER{
+        int orderId
+        date orderPlaced
+    }
+    
+    ORDER ||--|{ LINEITEM : contains
+    
+    LINEITEM {
+        int quantity
+        float price
+    }
+    
+    
+    PRODUCT {
+        string name
+        float cost
+    }
+    
+    ADRESS {
+        string street
+        string city
+    }
+    
+    CUSTOMER }| -- |{ PRODUCT: purchase
+    CUSTOMER || -- |{ ADRESS: Delivery
+    
+    
+"""
+
 
 
 
@@ -492,8 +567,10 @@ with ui.row():
         MERMAID_SUB_GRAPH: 'Sub graph',
         MERMAID_STATE_DIAGRAM: 'State diagram',
         MERMAID_STATE_DIAGRAM_COMPOSITE: 'State diagram composite',
-        MERMAID_STATE_DIAGRAM_CHOICE: 'State diagram choice',},
-        value=MERMAID_STATE_DIAGRAM_CHOICE)
+        MERMAID_STATE_DIAGRAM_CHOICE: 'State diagram choice',
+        MERMAID_ENTITY_RELATIONSHIP_DIAGRAM:'Entity relationship diagram (ERD) database',
+        MERMAID_ENTITY_RELATIONSHIP_DIAGRAM_2:'Entity relationship diagram (ERD) database 2',},
+        value=MERMAID_ENTITY_RELATIONSHIP_DIAGRAM_2)
 
     text_mermaid = ui.codemirror(language='Python'
                                  ).classes('h-80'
