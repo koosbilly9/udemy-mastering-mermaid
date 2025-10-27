@@ -531,6 +531,39 @@ erDiagram
     
 """
 
+MERMAID_USER_JOURNEY = """
+journey
+    section browse the product
+        visit website: 4:Mat
+        explore catagories 2:Mat
+        View product details: 3:Mat
+    
+    section make the purchase
+        Add cart: 2:Mat
+        Shipping info: 2:Mat
+        Complete purchase: 5:Mat
+"""
+
+MERMAID_USER_JOURNEY_DINNER = """
+journey
+    title Having dinner
+    section Arriving at the house
+        touchpoints: 1:Mike
+        Arrive at the door: 4:Mike
+        Discuss dinner plans: 3:Mike, James
+        Plan menu: 3:Mike, James
+    section grocery shopping
+        create shopping list: 3:Mike, James
+        go to store: 5:Mike
+    section cooking
+        cook food: 5:Mike
+        set table: 2:James
+        enjoy dinner: 5:Mike, James
+"""
+
+
+
+
 
 
 
@@ -569,8 +602,10 @@ with ui.row():
         MERMAID_STATE_DIAGRAM_COMPOSITE: 'State diagram composite',
         MERMAID_STATE_DIAGRAM_CHOICE: 'State diagram choice',
         MERMAID_ENTITY_RELATIONSHIP_DIAGRAM:'Entity relationship diagram (ERD) database',
-        MERMAID_ENTITY_RELATIONSHIP_DIAGRAM_2:'Entity relationship diagram (ERD) database 2',},
-        value=MERMAID_ENTITY_RELATIONSHIP_DIAGRAM_2)
+        MERMAID_ENTITY_RELATIONSHIP_DIAGRAM_2:'Entity relationship diagram (ERD) database 2',
+        MERMAID_USER_JOURNEY:'User journey',
+        MERMAID_USER_JOURNEY_DINNER:'Journey Having dinner'},
+        value=MERMAID_USER_JOURNEY_DINNER)
 
     text_mermaid = ui.codemirror(language='Python'
                                  ).classes('h-80'
